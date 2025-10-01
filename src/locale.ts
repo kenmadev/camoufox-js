@@ -14,7 +14,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import maxmind, { CityResponse } from 'maxmind';
 import xml2js from 'xml2js';
-import { getAsBooleanFromENV } from './utils.js';
+import { getAsBooleanFromENV, getDirname } from './utils.js';
 
 export const ALLOW_GEOIP = true;
 
@@ -223,7 +223,7 @@ export async function getGeolocation(ip: string): Promise<Geolocation> {
 }
 
 async function getUnicodeInfo(): Promise<any> {
-    const data = await fs.promises.readFile(path.join(import.meta.dirname, 'data-files', 'territoryInfo.xml'));
+    const data = await fs.promises.readFile(path.join(getDirname(), 'data-files', 'territoryInfo.xml'));
     const parser = new xml2js.Parser();
     return parser.parseStringPromise(data);
 }

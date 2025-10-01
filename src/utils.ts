@@ -3,6 +3,8 @@
 // from ua_parser import user_agent_parser
 
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { existsSync } from 'fs';
 import { DefaultAddons, addDefaultAddons, confirmPaths } from './addons.js';
 import { InvalidOS, InvalidPropertyType, NonFirefoxFingerprint, UnknownProperty } from './exceptions.js';
 import { fromBrowserforge, generateFingerprint, SUPPORTED_OS } from './fingerprints.js';
@@ -29,6 +31,30 @@ const CACHE_PREFS = {
     'browser.cache.disk_cache_ssl': true,
     'browser.cache.disk.smart_size.enabled': true,
 };
+
+export function getDirname(metaUrl = import.meta.url) {
+  let dir;
+
+  try {
+    // Development / ESM
+    dir = path.dirname(fileURLToPath(metaUrl));
+    console.log('dir from esm', dir);
+  } catch (err) {
+    // pkg / compiled executable
+    // __dirname fallback to the executable location
+    dir = path.dirname(process.execPath);
+
+    // Optional: if running as a script via node, fallback to argv[1]
+    if (!existsSync(dir)) {
+      dir = path.dirname(process.argv[1]);
+    }
+
+    console.log('dir from pkg', dir);
+  }
+
+  return dir;
+}
+
 
 function getEnvVars(configMap: ConfigMap, userAgentOS: string): EnvVars {
     const envVars: EnvVars = {};
@@ -182,7 +208,7 @@ function getScreenCons(headless?: boolean): Screen | undefined {
 }
 
 function updateFonts(config: Record<string, any>, targetOS: string): void {
-    const fontsPath = join(import.meta.dirname, 'data-files', 'fonts.json');
+    const fontsPath = join(getDirname(), 'data-files', 'fonts.json');
     const fonts = JSON.parse(readFileSync(fontsPath, 'utf-8'))[targetOS];
 
     if (config.fonts) {

@@ -1,9 +1,10 @@
 import { OS_ARCH_MATRIX } from '../pkgman.js';
 import path from 'node:path';
 import Database from 'better-sqlite3';
+import { getDirname } from '../utils.js';
 
 // Get database path relative to this file
-const DB_PATH = path.join(import.meta.dirname, '..' , 'data-files', 'webgl_data.db');
+const DB_PATH = path.join(getDirname(), 'data-files', 'webgl_data.db');
 
 interface WebGLData {
     vendor: string;

@@ -17,6 +17,7 @@ import * as yaml from 'js-yaml';
 import ProgressBar from 'progress';
 import { Writable } from 'stream';
 import { setTimeout } from 'timers/promises';
+import { getDirname } from './utils.js';
 
 const ARCH_MAP: { [key: string]: string } = {
     'x64': 'x86_64',
@@ -38,7 +39,7 @@ if (!(process.platform in OS_MAP)) {
 export const OS_NAME: 'mac' | 'win' | 'lin' = OS_MAP[process.platform];
 
 export const INSTALL_DIR: PathLike = userCacheDir('camoufox');
-export const LOCAL_DATA: PathLike = path.join(import.meta.dirname, 'data-files');
+export const LOCAL_DATA: PathLike = path.join(getDirname(), 'data-files');
 
 export const OS_ARCH_MATRIX: { [key: string]: string[] } = {
     'win': ['x86_64', 'i686'],

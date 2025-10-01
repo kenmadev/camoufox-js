@@ -1,7 +1,8 @@
 import { join } from 'path';
 import { loadYaml } from './pkgman.js';
+import { getDirname } from './utils.js';
 
-const WARNINGS_DATA = loadYaml(join(import.meta.dirname, 'data-files', 'warnings.yml'));
+const WARNINGS_DATA = loadYaml(join(getDirname(), 'data-files', 'warnings.yml'));
 
 export class LeakWarning extends Error {
     constructor(message: string) {
@@ -18,7 +19,7 @@ export class LeakWarning extends Error {
             warning += '\nIf this is intentional, pass `iKnowWhatImDoing=true`.';
         }
 
-        const currentModule = import.meta.dirname;
+        const currentModule = getDirname();
         const originalStackTrace = Error.prepareStackTrace;
         Error.prepareStackTrace = (_, stack) => stack;
         const err = new Error();
